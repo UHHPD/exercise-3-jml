@@ -1,0 +1,85 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: poisson
+      id: poisson
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: poisson
+        setup-command: g++ -o poisson poisson.cc; ./poisson
+        command: cat histpoi.txt
+        input: ''
+        expected-output: 8\s*2\s*2.2845
+        comparison-method: regex
+        timeout: 5
+        max-score: 1
+    - name: likelihood_1a
+      id: likelihood_1a
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: likelihood_1a
+        setup-command: g++ -o likelihood likelihood.cc
+        command: "./likelihood"
+        input: ''
+        expected-output: '7.76841e-195'
+        comparison-method: contains
+        timeout: 5
+        max-score: 10
+    - name: likelihood_1b
+      id: likelihood_1b
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: likelihood_1b
+        setup-command: g++ -o likelihood likelihood.cc; ./likelihood
+        command: cat likelihood.txt
+        input: ''
+        expected-output: 3.2\s*5.96523e-195
+        comparison-method: regex
+        timeout: 5
+        max-score: 100
+    - name: likelihood_1c
+      id: likelihood_1c
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: likelihood_1c
+        setup-command: g++ -o likelihood likelihood.cc; ./likelihood
+        command: cat nll.txt
+        input: ''
+        expected-output: 3.1\s*893.926
+        comparison-method: regex
+        timeout: 5
+        max-score: 1000
+    - name: likelihood_1e
+      id: likelihood_1e
+      uses: classroom-resources/autograding-io-grader@v1
+      with:
+        test-name: likelihood_1e
+        setup-command: g++ -o likelihood likelihood.cc
+        command: "./likelihood"
+        input: ''
+        expected-output: '233.942'
+        comparison-method: contains
+        timeout: 5
+        max-score: 10000
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        POISSON_RESULTS: "${{steps.poisson.outputs.result}}"
+        LIKELIHOOD_1A_RESULTS: "${{steps.likelihood_1a.outputs.result}}"
+        LIKELIHOOD_1B_RESULTS: "${{steps.likelihood_1b.outputs.result}}"
+        LIKELIHOOD_1C_RESULTS: "${{steps.likelihood_1c.outputs.result}}"
+        LIKELIHOOD_1E_RESULTS: "${{steps.likelihood_1e.outputs.result}}"
+      with:
+        runners: poisson,likelihood_1a,likelihood_1b,likelihood_1c,likelihood_1e
