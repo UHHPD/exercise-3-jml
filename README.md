@@ -1,16 +1,17 @@
-Sie finden diese Aufgabe auf github:
+You can find this assignment on GitHub:
 <https://classroom.github.com/g/GBlMdMbp>.
 
-Vergleichen Sie die Häufigkeit der Zahlen in **datensumme.txt** mit den
-Vorhersagen der Poissonverteilung. Bitte schreiben Sie Ihren Code in die
-Datei: **poisson.cc**
+Compare the frequency of the numbers in **datensumme.txt** with the
+predictions of the Poisson distribution. Please write your code in the
+file: **poisson.cc**
 
-Zählen Sie mit einem **std::vector\<int\>**, wie oft die Werte $k$ von 0
-bis 10 in der Datei vorkommen. Binden Sie dafür die entsprechende
-Include-Datei mit
+Count, using a **std::vector\<int\>**, how often the values $k$ from 0
+to 10 appear in the file. Include the necessary header with:
 
-    #include<vector>
-    using namespace std;
+```cpp
+#include <vector>
+using namespace std;
+
 
 ein. Erzeugen Sie ein vector-Objekt mit elf
 Einträgen:`vector<int> zaehler(11);` Lesen Sie dann alle $N = 234$
