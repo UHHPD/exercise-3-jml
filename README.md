@@ -1,137 +1,137 @@
-Sie finden diese Aufgabe auf github:
+
+You can find this assignment on github:
 <https://classroom.github.com/g/GBlMdMbp>.
 
-Vergleichen Sie die Häufigkeit der Zahlen in **datensumme.txt** mit den
-Vorhersagen der Poissonverteilung. Bitte schreiben Sie Ihren Code in die
-Datei: **poisson.cc**
+Compare the frequency of the numbers in **datensumme.txt** with the
+predictions of the Poisson distribution. Please write your code in the
+file: **poisson.cc**
 
-Zählen Sie mit einem **std::vector\<int\>**, wie oft die Werte $k$ von 0
-bis 10 in der Datei vorkommen. Binden Sie dafür die entsprechende
-Include-Datei mit
+Using a **std::vector<int>**, count how often the values $k$ from 0
+to 10 appear in the file. To do this, include the corresponding
+header file with
 
     #include<vector>
     using namespace std;
 
-ein. Erzeugen Sie ein vector-Objekt mit elf
-Einträgen:`vector<int> zaehler(11);` Lesen Sie dann alle $N = 234$
-Zahlenwerte $n_i$ aus **datensumme.txt** und erhöhen Sie immer den
-entsprechenden Eintrag im Vektor:
+Then create a vector object with eleven
+entries: `vector<int> zaehler(11);` Then read all $N = 234$
+numerical values $n_i$ from **datensumme.txt** and each time increase the
+corresponding entry in the vector:
 
     zaehler[zahl] += 1;
 
-Geben Sie am Ende alle Einträge im Vektor `zaehler` aus.
+At the end, print all entries in the vector `zaehler`.
 
-Erzeugen Sie nun eine Datei **hist.txt** mit den Ergebnissen aus a) im
-Format:
+Now create a file **hist.txt** with the results from a) in
+the format:
 
     0 12
     1 23
     2 53
     ...
 
-Stellen Sie die Werte als Histogramm da, indem Sie im Terminal
-**gnuplot** starten und im Programm
+Display the values as a histogram by starting **gnuplot** in the
+terminal and, in the program, entering
 
     plot "./hist.txt"  smooth freq with boxes
 
-eingeben. (Mit `quit` beenden Sie **gnuplot**.) Altnativ können Sie eine
-Online-Version von gnuplot nutzen: <http://gnuplot.respawned.com/>.
-Kopieren Sie Ihre Datenwerte in das obere Textfenster und geben im
-darunter liegenden folgendes ein:
+(Type `quit` to exit **gnuplot**.) Alternatively, you can use an
+online version of gnuplot: <http://gnuplot.respawned.com/>.
+Copy your data values into the upper text window and enter the
+following into the lower one:
 
     set terminal svg size 400,300 enhanced fname 'arial'  fsize 10 butt solid
     set output 'out.svg'
     plot  "data.txt" using 1:2 smooth freq with boxes
 
-Schreiben Sie eine Funktion `double poisson(double mu, int k)`, die die
-Poissonwahrscheinlichkeit $P(k,\mu) =  \frac{\mu^ke^{-\mu}}{k!}$
-berechnet. Benutzen Sie als Implementation der Exponentialfunktion die
-Funktion `double exp(double x)` aus **cmath** und die Funktion
-`double pow(double x, double k)` für $x^k$. Die Fakultät können Sie über
-die Gammafunktion $k! = \Gamma(k+1)$ (`double tgamma(double x)` in
-**cmath**) berechnen.\
-Schreiben Sie eine neue Datei **histpoi.txt**, die in einer dritten
-Spalte die Erwartung aus der Poissonverteilung $N \cdot P(k, \mu)$
-enthält. Verwenden Sie den Mittelwert aus Blatt 2 als $\mu$ der
-Poissonverteilung (3,11538).\
-Vergleichen Sie die Werte und die Vorhersagen mit **gnuplot**:\
-`plot "./histpoi.txt" using 1:2, ''./histpoi.txt" using 1:3 smooth freq with boxes`
+Write a function `double poisson(double mu, int k)`, which computes the
+Poisson probability $P(k,\mu) =  \frac{\mu^k e^{-\mu}}{k!}$.
+Use the function `double exp(double x)` from **cmath** as the implementation
+of the exponential function and the function
+`double pow(double x, double k)` for $x^k$. You can compute the factorial via
+the gamma function $k! = \Gamma(k+1)$ (`double tgamma(double x)` in
+**cmath**).
+Now write a new file **histpoi.txt**, which in a third
+column contains the expectation from the Poisson distribution
+$N \cdot P(k, \mu)$. Use the mean value from sheet 2 as $\mu$ of the
+Poisson distribution (3.11538).
+Compare the values and the predictions with **gnuplot**:\
+`plot "./histpoi.txt" using 1:2, "./histpoi.txt" using 1:3 smooth freq with boxes`
 
-Wir wollen nun den Wert von $\mu$ aus den Daten mit der
-[Maximum-Likelihood-Methode](https://de.wikipedia.org/wiki/Maximum-Likelihood-Methode)
-abschätzen. Zudem wollen wir die Übereinstimmung mit der
-Poisson-Hypothese quantifizieren. Hierzu nutzen wir die
-Log-Likelihood-Funktion
-([Likelihood-Quotienten-Test](https://de.wikipedia.org/wiki/Likelihood-Quotienten-Test))
-und deren Beziehung zur $\chi^2$-Verteilung. Bitte schreiben Sie Ihren
-Code in die Datei: **likelihood.cc**
+We now want to estimate the value of $\mu$ from the data using the
+[maximum likelihood method](https://en.wikipedia.org/wiki/Maximum_likelihood_estimation).
+We also want to quantify the agreement with the
+Poisson hypothesis. For this we use the
+log-likelihood function
+([likelihood-ratio test](https://en.wikipedia.org/wiki/Likelihood-ratio_test))
+and its relation to the $\chi^2$ distribution. Please write your
+code in the file: **likelihood.cc**
 
-Berechnen Sie zunächst die Gesamtwahrscheinlichkeit, die 234 Zahlenwerte
-$n_i$ erhalten: $\mathcal{L}(\mu) = \prod_{i=1}^{234} P(n_i,\mu)$, wenn
-die Annahme der Poissonverteilung stimmt. Speichern Sie hierzu alle
-Werte aus "datensumme.txt" in einem Vektor **std::vector\<int\>
-daten**.\
-Benutzen Sie **daten.push\_back(zahl)**, um den Wert der Variable
-**zahl** zum Vektor hinzuzufügen.\
-Schreiben Sie nun eine Funktion
-`double prob(std::vector<int> daten, double mu)`, die die Likelihood,
-also die Wahrscheinlichkeit
-$\mathcal{L}(\mu) = \prod_i   \frac{\mu^{k_i}e^{-\mu}}{k_i!}$, die Daten
-mit einem bestimmten $\mu$ zu erhalten, berechnet.
+First compute the total probability of obtaining the 234 numerical
+values $n_i$: $\mathcal{L}(\mu) = \prod_{i=1}^{234} P(n_i,\mu)$, assuming
+that the Poisson distribution hypothesis is correct. To do this, store all
+values from "datensumme.txt" in a vector **std::vector<int>
+daten**.
+Use **daten.push\_back(zahl)** to add the value of the variable
+**zahl** to the vector.
+Now write a function
+`double prob(std::vector<int> daten, double mu)`, which computes the likelihood,
+i.e. the probability
+$\mathcal{L}(\mu) = \prod_i   \frac{\mu^{k_i}e^{-\mu}}{k_i!}$ of obtaining
+the data for a given $\mu$.
 
-Zum Iterieren über die Werte in **daten** nutzen Sie:
+To iterate over the values in **daten**, use:
 
     for(int k : daten) {
       ...
     }
 
-Geben Sie die Wahrscheinlichkeit für $\mu = 3{,}11538$ (Mittelwert der
-Stichprobe) aus. Es sollte $7{,}76841\cdot 10^{-195}$ herauskommen.
+Print the probability for $\mu = 3.11538$ (the sample mean).
+The result should be $7.76841\cdot 10^{-195}$.
 
-Schreiben Sie nun für $\mu$-Werte zwischen 0 und 6 eine Datei
-"likelihood.txt" mit den Wertepaaren $\mu$ und $\mathcal{L}(\mu)$.
-Tasten Sie $\mu$ mit einer Schrittweite von 0.1 ab. Stellen Sie die
-Werte als Graph da, indem Sie im Terminal **gnuplot** starten und im
-Programm `plot "likelihood.txt"  with line` eingeben. (Mit `quit`
-beenden Sie **gnuplot**.)\
-Verringern Sie die Schrittweite, um ein schöneres Bild zu erhalten. Was
-sehen Sie?\
-Finden Sie über das Maximum des Likelihood den besten Schätzwert für
-$\mu$.\
-(Mit `plot [xmin:xmax] "likelihood.txt"  with line` können Sie nur einen
-Ausschnitt in $x$ des Graphen darstellen.)
+Now, for $\mu$ values between 0 and 6, write a file
+"likelihood.txt" with the value pairs $\mu$ and $\mathcal{L}(\mu)$.
+Scan $\mu$ with a step size of 0.1. Display the
+values as a graph by starting **gnuplot** in the terminal and entering
+in the program `plot "likelihood.txt"  with line`. (Use `quit`
+to exit **gnuplot**.)
+Decrease the step size to obtain a nicer plot. What
+do you see?
+Find the best estimate for $\mu$ from the maximum of the likelihood.
+(With `plot [xmin:xmax] "likelihood.txt"  with line` you can display only a
+section in $x$ of the graph.)
 
-Schreiben Sie nun eine zweite Datei "nll.txt" mit den Wertepaaren $\mu$
-und $- 2\ln \mathcal{L}(\mu)$, dem negativen Log-Likelihood. Benutzen
-Sie die `log`-Funktion aus **cmath**. Erzeugen Sie auch für diese Werte
-einen Graph mit **gnuplot**.
+Now write a second file "nll.txt" with the value pairs $\mu$
+and $- 2\ln \mathcal{L}(\mu)$, the negative log-likelihood. Use
+the `log` function from **cmath**. Also create a graph for these values
+with **gnuplot**.
 
-Der Mittelwert der Stichprobe sollte ein guter Schätzwert für $\mu$
-sein. Ziehen Sie nun beim Schreiben der Datei "deltanll.txt"
-$-2\ln \mathcal{L}(3{,}11538)$ vom negativen Log-Likelihood
-$- 2\ln \mathcal{L}(\mu)$ ab. Erzeugen Sie wiederum einen Graph mit
-**gnuplot**.\
-Mit `plot [xmin:xmax][ymin:ymax] "deltanll.txt"  with line` können Sie
-nur einen Ausschnitt des Graphen darstellen.\
-Finden Sie über das Minimum des negativen Log-Likelihood den besten
-Schätzwert für $\mu$. Bestimmen Sie den Fehler auf den geschätzten
-$\mu$-Wert, indem Sie das Intervall finden, in dem
-$- \ln \mathcal{L}(\mu)$ um weniger als 1,0 größer als im Minimum ist.
+The sample mean should be a good estimate for $\mu$.
+Now, when writing the file "deltanll.txt", subtract
+$-2\ln \mathcal{L}(3.11538)$ from the negative log-likelihood
+$- 2\ln \mathcal{L}(\mu)$. Again create a graph with
+**gnuplot**.
+With `plot [xmin:xmax][ymin:ymax] "deltanll.txt"  with line` you can
+display only a section of the graph.
+Find the best estimate for $\mu$ from the minimum of the negative
+log-likelihood. Determine the error on the estimated
+$\mu$ value by finding the interval in which
+$- \ln \mathcal{L}(\mu)$ is less than 1.0 larger than at the minimum.
 
-Da diese Gesamtwahrscheinlichkeit immer kleiner wird, je mehr
-Zahlenwerte betrachtet werden, teilt man diese Likelihood für eine
-Poissonverteilung mit $\mu = 3{,}11538$ durch die bestmögliche
-Poissonwahrscheinlichkeit, nämlich jener, wenn für jede einzelne Zahl
-$\mu = n_i$ angenommen wird. Berechnen Sie den Likelihood-Quotienten:
+Because this total probability becomes smaller and smaller the more
+numerical values are considered, one divides this likelihood for a
+Poisson distribution with $\mu = 3.11538$ by the best possible
+Poisson probability, namely the one obtained when for each individual number
+$\mu = n_i$ is assumed. Compute the likelihood ratio:
 $\Lambda = \prod_{i=1}^{234} P(n_i,\mu)/\prod_{i=1}^{234} P(n_i,n_i)$
-und geben Sie den Wert aus.\
-Wenn die Annahme einer Poissonverteilung stimmt, sollte $-2\ln \Lambda$
-gemäß einer
-[$\chi^2$-Verteilung](https://de.wikipedia.org/wiki/Chi-Quadrat-Verteilung)
-mit $n_\textrm{dof} = 233$ Freiheitsgraden verteilt sein. Für eine Zahl
-an Freiheitsgraden größer 100 sollte die $\chi^2$-Verteilung einer
-Normalverteilung mit Mittelwert $n_\textrm{dof}$ und Standardabweichung
-$\sqrt{2n_\textrm{dof}}$ entsprechen. Berechnen Sie die relative
-Abweichung Ihres Likelihood-Quotienten vom Mittelwert:
+and output the value.
+If the Poisson distribution hypothesis is correct, then $-2\ln \Lambda$
+should be distributed according to a
+[$\chi^2$ distribution](https://en.wikipedia.org/wiki/Chi-squared_distribution)
+with $n_\textrm{dof} = 233$ degrees of freedom. For a number
+of degrees of freedom greater than 100, the $\chi^2$ distribution should
+be well approximated by a normal distribution with mean $n_\textrm{dof}$
+and standard deviation $\sqrt{2n_\textrm{dof}}$. Compute the relative
+deviation of your likelihood ratio from the mean:
 $z = \frac{2\ln \Lambda - n_\textrm{dof}}{\sqrt{2n_\textrm{dof}}}$.
-Benutzen Sie die `sqrt`-Funktion aus **cmath**.
+Use the `sqrt` function from **cmath**.
