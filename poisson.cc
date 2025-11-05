@@ -1,20 +1,29 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-
-
-double poisson(double mu, int k) {
-    return 0;
-}
+using namespace std;
 
 int main() {
-    using namespace std;
-
+    vector<int> zaehler(11, 0); 
 
     ifstream fin("datensumme.txt");
-    int n_i;
-    for(int i = 0 ; i < 234 ; ++i) {
-        fin >> n_i;
+    if (!fin.is_open()) {
+        cerr << "Error: could not open datensumme.txt" << endl;
+        return 1;
     }
+
+    int zahl;
+    while (fin >> zahl) {
+        if (zahl >= 0 && zahl <= 10) {
+            zaehler[zahl] += 1;
+        }
+    }
+
     fin.close();
+
+    for (unsigned int k = 0; k < zaehler.size(); ++k) {
+        cout << k << " : " << zaehler[k] << endl;
+    }
+
+    return 0;
 }
