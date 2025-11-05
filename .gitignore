@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+poisson
+likelihood
+
+# Output files from the programs
+hist.txt
+histpoi.txt
+likelihood.txt
+nll.txt
+deltanll.txt
