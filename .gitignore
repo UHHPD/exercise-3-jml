@@ -31,3 +31,7 @@
 *.out
 *.app
 .likelihood_bin
+.likelihood_bin
+poisson
+*.o
+*.out
