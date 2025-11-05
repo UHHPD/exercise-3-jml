@@ -46,6 +46,6 @@ int main() {
     }
 
     std::cout.setf(std::ios::fixed);
-    std::cout << std::setprecision(5) << "mu_hat = " << best_mu << "\n";
+    std::cout << std::setprecision(5) << best_mu << "\n";
     return 0;
 }
