@@ -1,41 +1,47 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-using namespace std;
+#include <cmath>
+#include <iomanip>
+
+double poisson(double mu, int k) {
+    if (mu <= 0.0) return (k == 0) ? 1.0 : 0.0;
+    return std::pow(mu, k) * std::exp(-mu) / std::tgamma(k + 1.0);
+}
 
 int main() {
+    const double mu = 3.11538;
+    const int kmin = 0, kmax = 10;
 
-    vector<int> zaehler(11, 0);
-
-
-    ifstream fin("datensumme.txt");
+    std::ifstream fin("datensumme.txt");
     if (!fin) {
-        cerr << "Error: could not open datensumme.txt" << endl;
+        std::cerr << "ERROR: cannot open datensumme.txt\n";
         return 1;
     }
-    int zahl;
-    while (fin >> zahl) {
-        if (0 <= zahl && zahl <= 10) {
-            zaehler[zahl] += 1;
-        }
+
+    std::vector<int> counts(kmax - kmin + 1, 0);
+    int N = 0;
+    int x;
+    while (fin >> x) {
+        if (x >= kmin && x <= kmax) counts[x - kmin] += 1;
+        N++;
     }
     fin.close();
 
-
-    for (unsigned int k = 0; k < zaehler.size(); ++k) {
-        cout << k << " : " << zaehler[k] << endl;
-    }
-
-    ofstream fout("hist.txt");
+    std::ofstream fout("histpoi.txt");
     if (!fout) {
-        cerr << "Error: could not write hist.txt" << endl;
+        std::cerr << "ERROR: cannot write histpoi.txt\n";
         return 1;
     }
-    for (int k = 0; k <= 10; ++k) {
-        fout << k << " " << zaehler[k] << "\n";
+
+    fout.setf(std::ios::fixed);
+    fout << std::setprecision(6);
+
+    for (int k = kmin; k <= kmax; ++k) {
+        double expected = N * poisson(mu, k);
+        fout << k << " " << counts[k - kmin] << " " << expected << "\n";
     }
     fout.close();
 
-    cout << "Wrote counts to hist.txt" << endl;
     return 0;
 }
