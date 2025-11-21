@@ -47,17 +47,13 @@ int main() {
     }
 
     const int N = static_cast<int>(daten.size());
-    const double sample_mean = static_cast<double>(sum_k) / N;
 
-
+    // ---- (a) likelihood at mu = 3.11538 ----
     const double mu_sheet = 3.11538;
     const double L_sheet  = prob(daten, mu_sheet);
     const double logL_sheet = logL_mu(daten, mu_sheet);
 
-    cout << scientific << setprecision(6);
-    cout << "L(mu=" << mu_sheet << ") = " << L_sheet << "\n";
-
-
+    // ---- scan mu from 0 to 6 in steps of 0.1 ----
     const double mu_min = 0.0;
     const double mu_max = 6.0;
     const double step   = 0.1;
@@ -91,13 +87,13 @@ int main() {
             best_mu   = mu;
         }
 
-
+        // (b) likelihood.txt : mu, L(mu)
         like_out << mu << " " << L << "\n";
 
-
+        // (c) nll.txt : mu, -2 ln L(mu)
         nll_out << mu << " " << nll << "\n";
 
-
+        // (d) deltanll.txt : mu, -2 ln L(mu) + 2 ln L(mu_sheet)
         double delta_nll = nll + 2.0 * logL_sheet;  // = -2(ll - logL_sheet)
         dnll_out << mu << " " << delta_nll << "\n";
     }
@@ -107,40 +103,6 @@ int main() {
     dnll_out.close();
 
 
-    double lower_mu = best_mu;
-    double upper_mu = best_mu;
-
-    // search downwards
-    for (double mu = best_mu; mu >= mu_min; mu -= step) {
-        double ll  = logL_mu(daten, mu);
-        double dnll_hat = -2.0 * (ll - best_logL);   // -2 ln [L(mu)/L(mu_hat)]
-        if (dnll_hat > 1.0) {
-            lower_mu = mu + step;  // previous mu was last within Δ<1
-            break;
-        }
-    }
-
-    // search upwards
-    for (double mu = best_mu; mu <= mu_max; mu += step) {
-        double ll  = logL_mu(daten, mu);
-        double dnll_hat = -2.0 * (ll - best_logL);
-        if (dnll_hat > 1.0) {
-            upper_mu = mu - step;
-            break;
-        }
-    }
-
-    const double mu_error = 0.5 * (upper_mu - lower_mu);
-
-    // theoretical error on sample mean: σ/√N with σ^2 = μ
-    const double sigma_mean = sqrt(best_mu / N);
-
-    cout << "mu_hat (from likelihood scan) = " << best_mu << "\n";
-    cout << "approx. 1-sigma interval     = [" << lower_mu
-         << ", " << upper_mu << "]  =>  Δmu ≈ " << mu_error << "\n";
-    cout << "error from sample mean       = " << sigma_mean << "\n";
-
-
     double logL_sat = 0.0;
     for (int k : daten) {
         if (k > 0) {
@@ -148,7 +110,7 @@ int main() {
                         - k
                         - lgamma(k + 1.0);
         } else {
-            // for k = 0, P(0 | mu=0) = 1, log = 0
+
             logL_sat += 0.0;
         }
     }
@@ -159,9 +121,12 @@ int main() {
     double sigma_chi = sqrt(2.0 * ndof);
     double z = (minus2lnLambda - ndof) / sigma_chi;
 
-    cout << "-2 ln Lambda = " << minus2lnLambda << "\n";
-    cout << "ndof         = " << ndof << "\n";
-    cout << "z            = " << z << "\n";
+
+    cout << scientific << setprecision(6);
+    cout << L_sheet << "\n";
+    cout << best_mu << "\n";
+    cout << minus2lnLambda << "\n";
+    cout << z << "\n";
 
     return 0;
 }
