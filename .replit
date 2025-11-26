@@ -1,0 +1,29 @@
+modules = ["cpp-clang14"]
+[agent]
+expertMode = true
+
+[nix]
+channel = "stable-25_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "build"
+
+[[workflows.workflow]]
+name = "build"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "make all && echo \"Build successful! Run './poisson' or './likelihood' to execute the programs.\""
+
+[workflows.workflow.metadata]
+outputType = "console"
